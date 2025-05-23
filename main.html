@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ResultRelief - CGPA Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #141e30, #243b55);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      width: 90%;
+      max-width: 800px;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px #000;
+    }
+    .subject {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+    }
+    label {
+      flex: 1;
+    }
+    input[type="number"] {
+      width: 80px;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #00c6ff;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 198, 255, 0.3);
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #007ea7;
+      color: #fff;
+    }
+    .result {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .note {
+      margin-top: 20px;
+      font-size: 16px;
+      text-align: center;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎓 ResultRelief - CGPA Calculator</h1>
+    <h2>Semester 1</h2>
+    <form id="sem1Form"></form>
+
+    <h2>Semester 2</h2>
+    <form id="sem2Form"></form>
+
+    <button onclick="calculateCGPA()">Calculate CGPA</button>
+    <div class="result" id="result"></div>
+    <div class="note">* Please note that this CGPA is approximate and based on the marks entered. Official transcripts may vary.</div>
+  </div>
+
+  <script>
+    const semester1 = [
+      { name: "Chemistry", credits: 4 },
+      { name: "Mathematics-I", credits: 4 },
+      { name: "Biology for Engineers", credits: 3 },
+      { name: "Programming for Problem Solving", credits: 3 },
+      { name: "Engineering Mechanics", credits: 3 },
+      { name: "Universal Human Values", credits: 3 },
+      { name: "Chemistry Lab", credits: 1 }
+    ];
+
+    const semester2 = [
+      { name: "Physics", credits: 4 },
+      { name: "Mathematics-II", credits: 4 },
+      { name: "Basic Electrical Engineering", credits: 3 },
+      { name: "Engineering Graphics", credits: 3 },
+      { name: "Technical Report Writing", credits: 2 },
+      { name: "Physics Lab", credits: 1 },
+      { name: "Basic Electrical Engineering Lab", credits: 1 },
+      { name: "Design Thinking", credits: 2 },
+      { name: "Digital Fabrication Workshop", credits: 1 }
+    ];
+
+    function populateForm(subjects, formId, prefix) {
+      const form = document.getElementById(formId);
+      subjects.forEach((subj, index) => {
+        form.innerHTML += `
+          <div class="subject">
+            <label>${subj.name} (${subj.credits} credits)</label>
+            <input type="number" min="0" max="100" id="${prefix}${index}" placeholder="Marks">
+          </div>`;
+      });
+    }
+
+    populateForm(semester1, 'sem1Form', 'sem1_');
+    populateForm(semester2, 'sem2Form', 'sem2_');
+
+    function marksToGradePoint(marks) {
+      if (marks >= 90) return 10;
+      if (marks >= 80) return 9;
+      if (marks >= 70) return 8;
+      if (marks >= 60) return 7;
+      if (marks >= 50) return 6;
+      if (marks >= 40) return 5;
+      return 0;
+    }
+
+    function calculateCGPA() {
+      let totalGradePoints = 0;
+      let totalCredits = 0;
+
+      semester1.forEach((subj, index) => {
+        const marks = parseFloat(document.getElementById(`sem1_${index}`).value);
+        if (!isNaN(marks)) {
+          totalGradePoints += marksToGradePoint(marks) * subj.credits;
+          totalCredits += subj.credits;
+        }
+      });
+
+      semester2.forEach((subj, index) => {
+        const marks = parseFloat(document.getElementById(`sem2_${index}`).value);
+        if (!isNaN(marks)) {
+          totalGradePoints += marksToGradePoint(marks) * subj.credits;
+          totalCredits += subj.credits;
+        }
+      });
+
+      const cgpa = (totalGradePoints / totalCredits).toFixed(2);
+      document.getElementById("result").innerText = `Your CGPA is ${cgpa}`;
+    }
+  </script>
+</body>
+</html>
